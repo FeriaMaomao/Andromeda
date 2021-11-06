@@ -30,12 +30,12 @@ if(!isset($_REQUEST['msj'])){
 
     function Cambiar(codusuario)
     {
-      window.location="http://andromedainventory.ml/Vista/ModificarUsuario.php?parametro="+codusuario;
+      window.location="http://andromedainventory.ml:6100/Vista/ModificarUsuario.php?parametro="+codusuario;
     }
 
     function EliminarUsuario(codigoeliminar)
     {
-      window.location="http://andromedainventory.ml/Controlador/validarEliminarUsuario.php?parametro="+codigoeliminar;
+      window.location="http://andromedainventory.ml:6100/Controlador/validarEliminarUsuario.php?parametro="+codigoeliminar;
     }
 
   </script>

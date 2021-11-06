@@ -1,0 +1,22 @@
+#Project Property
+sonar.projectKey=
+sonar.projectName=
+
+#Project Type
+sonar.sources=
+sonar.test=
+sonar.exclusions=
+sonar.sourceEncoding=UTF-8
+
+#Project Coverage
+sonar.coverage.exclusions=
+sonar.junit.reportPaths=
+sonar.javascript.file.suffixes=
+#sonar.javascript.file.suffixes=
+sonar.typescript.file.suffixes=
+#sonar.typescript.file.suffixes=
+sonar.javascript.lcov.reportPaths=
+sonar.typescript.lcov.reportPaths=
+
+#SonarQube Server
+sonar.host.url="URL SonarQube Server"

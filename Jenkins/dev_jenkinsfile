@@ -1,3 +1,7 @@
+def envDeployment = "dev"
+def MAJOR_VERSION = "1"
+def ARTIFACT_VERSION = "${MAJOR_VERSION}.${BUILD_NUMBER}"
+
 pipeline {
 	options {
 		ansiColor('gnome-terminal')
@@ -11,6 +15,10 @@ pipeline {
 			steps {
 				sh 'docker -v'
                 sh 'docker-compose -v'
+				sh 'aws --version'
+				sh 'phpunit --version'
+				sh 'npm --version'
+				sh 'composer --version'
 			}
 		}
         
@@ -20,21 +28,50 @@ pipeline {
 			}
 		}
 
-        stage('Pull Change') {
+        stage('Install Dependencies') {
 			steps {
-				sh 'cd /home/torrescardenaslina/dev/andromeda_inventory && git checkout . && git pull'
+				sh 'php composer.phar install'
 			}
 		}
 
-        stage('Run Build Docker') {
+		stage('Unit Test & Coverage') {
 			steps {
-				sh 'cd /home/torrescardenaslina/dev/andromeda_inventory/Docker/Dev && docker-compose up -d'
+				sh 'cd /Test && phpunit UnitTest'
 			}
 		}
-        
-        stage('Deploy') {
+
+		stage('SonarQube Analysis') {
 			steps {
-				sh 'docker restart andromeda_dev'
+				withSonarQubeEnv('sonarqube') {
+					sh 'node_modules/sonar-scanner/bin/sonar-scanner -X -Dproject.settings=Jenkins/sonar-project.properties -Dsonar.projectVersion=' + ARTIFACT_VERSION + ' '
+				}
+				sleep(time:5,unit:"SECONDS")
+			}
+		}
+
+		stage('Quality Gate Analysis') {
+			steps {
+				timeout(time: 1, unit: 'MINUTES') {
+					script  {
+						def qg = waitForQualityGate()
+						if (qg.status != 'OK') {
+							error "Pipeline aborted due to quality gate failure: ${qg.status}"
+						}
+					}
+				}
+			}
+		}
+
+        stage('Run Script') {
+			steps {
+				sh 'chmod +x /Docker/Dev/build.sh'
+				sh './Docker/Dev/build.sh'
+			}
+		}
+
+		stage('Deploy') {
+			steps {
+				sh 'cd /Docker/Dev && docker-compose up -d'
 			}
 		}
     }
