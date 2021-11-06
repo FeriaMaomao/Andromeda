@@ -1,4 +1,4 @@
-def envDeployment = "Prod"
+def envDeployment = "qa"
 def MAJOR_VERSION = "1"
 def ARTIFACT_VERSION = "${MAJOR_VERSION}.${BUILD_NUMBER}"
 
@@ -65,13 +65,13 @@ pipeline {
         stage('Run Script') {
 			steps {
 				sh 'chmod +x /Docker/Dev/build.sh'
-				sh './Docker/Prod/build.sh'
+				sh './Docker/QA/build.sh'
 			}
 		}
 
 		stage('Deploy') {
 			steps {
-				sh 'cd /Docker/Prod && docker-compose up -d'
+				sh 'cd /Docker/QA && docker-compose up -d'
 			}
 		}
     }

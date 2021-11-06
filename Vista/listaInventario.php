@@ -25,12 +25,12 @@ if (!isset($_REQUEST['msj'])){
 
     function ModificarInventario(codinventario)
     {
-      window.location="http://andromedainventory.ml//Vista/ModificarInventario.php?parametro="+codinventario;
+      window.location="http://andromedainventory.ml:6100//Vista/ModificarInventario.php?parametro="+codinventario;
     }
 
     function EliminarInventario(codinventario)
     {
-      window.location="http://andromedainventory.ml//Controlador/validarEliminarInventario.php?parametro="+codinventario;
+      window.location="http://andromedainventory.ml:6100//Controlador/validarEliminarInventario.php?parametro="+codinventario;
     }
 
   </script>
