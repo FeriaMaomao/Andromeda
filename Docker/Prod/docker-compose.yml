@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /home/torrescardenaslina/certs:/etc/nginx/certs:ro
+      - /home/torrescardenaslina/vhostd:/etc/nginx/vhost.d
+      - /home/torrescardenaslina/html:/usr/share/nginx/html
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt
+    restart: always
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    volumes:
+      - /home/torrescardenaslina/certs:/etc/nginx/certs:rw
+      - /home/torrescardenaslina/vhostd:/etc/nginx/vhost.d
+      - /home/torrescardenaslina/html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  andromeda:
+    image: $BRANCH-$SERVICE_NAME:$TAG_VERSION
+    container_name: andromeda
+    restart: always
+    environment:
+      - VIRTUAL_HOST=andromedainventory.ml,www.andromedainventory.ml
+      - LETSENCRYPT_HOST=andromedainventory.ml,www.andromedainventory.ml
+      - LETSENCRYPT_EMAIL=mauriciogonzalezferia@gmail.com
+    links:
+      - MYSQL_SERVER
+
+  MYSQL_SERVER:
+    image: mysql:8.0.1
+    container_name: MYSQL_SERVER
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=mypass123
+      - MYSQL_DATABASE=andromeda
+
+  phpmyadmin:
+    depends_on:
+      - MYSQL_SERVER
+    links:
+      - MYSQL_SERVER:db
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80

@@ -1,0 +1,41 @@
+pipeline {
+	options {
+		ansiColor('gnome-terminal')
+	}
+
+	agent any
+
+	stages {
+
+		stage('Prepare Stage') {
+			steps {
+				sh 'docker -v'
+                sh 'docker-compose -v'
+			}
+		}
+        
+        stage('Clone Repo') {
+			steps {
+				checkout scm
+			}
+		}
+
+        stage('Pull Change') {
+			steps {
+				sh 'cd /home/torrescardenaslina/prod/andromeda_inventory && git checkout . && git pull'
+			}
+		}
+
+        stage('Run Build Docker') {
+			steps {
+				sh 'cd /home/torrescardenaslina/prod/andromeda_inventory/Docker/Prod && docker-compose up -d'
+			}
+		}
+        
+        stage('Deploy') {
+			steps {
+				sh 'docker restart andromeda'
+			}
+		}
+    }
+}

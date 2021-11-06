@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  andromeda_$BRANCH:
+    image: $BRANCH-$SERVICE_NAME:$TAG_VERSION
+    container_name: andromeda_$BRANCH
+    restart: always
+    ports:
+      - 7100:80
+    links:
+      - MYSQL_SERVER_$BRANCH
+
+  MYSQL_SERVER_$BRANCH:
+    image: mysql:8.0.1
+    container_name: MYSQL_SERVER_$BRANCH
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=mypass123
+      - MYSQL_DATABASE=andromeda
+
+  phpmyadmin_$BRANCH:
+    depends_on:
+      - MYSQL_SERVER_$BRANCH
+    links:
+      - MYSQL_SERVER_$BRANCH:db
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_$BRANCH
+    restart: always
+    ports:
+      - 7160:80
