@@ -26,12 +26,12 @@ if (!isset($_REQUEST['msj'])){
 
     function ModificarProveedor(codproveedor)
     {
-      window.location="http://andromedainventory.ml//Vista/ModificarProveedor.php?parametro="+codproveedor;
+      window.location="http://andromedainventory.ml:6100//Vista/ModificarProveedor.php?parametro="+codproveedor;
     }
 
     function EliminarProveedor(codproveedor)
     {
-      window.location="http://andromedainventory.ml//Controlador/validarEliminarProveedor.php?parametro="+codproveedor;
+      window.location="http://andromedainventory.ml:6100//Controlador/validarEliminarProveedor.php?parametro="+codproveedor;
     }
 
   </script>
